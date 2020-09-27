@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <title>Todo App</title>
+
+     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
+ 
+      
+</head>
+
+<style >
+.id{
+  font-size: 15px;
+  color: #615ad4;
+}
+
+
+
+span{
+  width: 100px;
+}
+</style>
+
+<script>
+      
+      $(document).ready(function(){
+        document.getElementById("addTodoButton").disabled = true;
+   $('#addTodoInput').on("change keyup paste", function() {
+     if(document.getElementById("addTodoInput").value == ""){
+      document.getElementById("addTodoButton").disabled = true;
+     }else{
+        document.getElementById("addTodoButton").disabled = false;
+     }
+   
+});
+      });
+
+      function showorhide(id) {
+           console.log(id);
+            document.getElementById("updateForm-"+id).style.display="block";
+            document.getElementById("updateOpen-"+id).style.display="none";
+            document.getElementById("closeButton-"+id).style.display="block";
+      }
+      function closeForm(id){
+        document.getElementById("updateForm-"+id).style.display="none";
+         document.getElementById("updateOpen-"+id).style.display="block";
+            document.getElementById("closeButton-"+id).style.display="none";
+      }
+
+
+    </script>
+  
+  
+<body>
+    
+
+    <div style='margin-top:150px' class="container">
+    <h3>Todo List</h3>
+    <form action = "addTodo" method ="post">
+    {% csrf_token %}
+    <div class="row">
+      <div class="col-md-9">
+ <div class="form-group">
+    <input type="text" name= "title"  class="form-control" id="addTodoInput" placeholder="enter your todo title">
+  </div>
+      </div>
+      <div class="col-md-3">
+      <button type="submit" id="addTodoButton" class="btn btn btn-block btn-primary">Add Todo</button>
+      </div>
+    </div>
+ 
+
+  
+</form><br>
+
+{% if todos %}
+<table class="table " >
+<thead class="thead-dark">
+    <tr>
+      <th scope="col">Id</th>
+      <th scope="col">To do</th>
+      <th scope="col">Status</th>
+    <th scope="col">Status Change</th>
+    <th scope="col">Delete</th>
+    <th scope="col">Update</th>
+    </tr>
+  </thead>
+
+  <tbody>
+  {% for todo in todos  %}
+
+
+   
+    <tr>
+      <th scope="row" class="id">#{{todo.id}}</th>
+      <td>{{todo.title}}</td>
+      {% if todo.completed %}
+      <td><span class="badge badge-success">Completed</span></td>
+      {% else %}
+      <td><span class="badge badge-danger">Not Completed</span></td>
+      {% endif %}
+      <td><a href="/update/{{todo.id}}" class="btn btn-sm btn-block btn-primary">Change Status</a></td>
+      <td><a href="/delete/{{todo.id}}" class="btn btn-sm btn-danger">Delete</a></td>
+  
+       <td>
+       
+         <form id="updateForm-{{ forloop.counter }}" style="display: none;" action = "updateTodo/{{todo.id}}" method ="post">
+    {% csrf_token %}
+  <div class="form-group">
+    <input type="text" name= "title" class="form-control" id="formGroupExampleInput" placeholder="new title">
+  </div>
+
+  <button type="submit" style="float:left;width: 25%;" class="btn btn-success btn-sm">Save</button>
+</form>
+  <button id="updateOpen-{{ forloop.counter }}" onClick='showorhide("{{ forloop.counter }}")'  class="btn btn-success btn-sm">Update</button>
+   <button style="display:none;float:right;width: 25%;" id="closeButton-{{ forloop.counter }}" onClick='closeForm("{{ forloop.counter }}")'  class="btn btn-danger btn-sm">Close</button>
+       </td>
+    </tr>
+  {% endfor %}
+
+  </tbody>
+</table>
+{% else %}
+<div class="alert alert-danger">
+Todo'nuz bulunmuyor!!
+</div>
+{% endif %}
+
+
+
+    </div>
+
+
+
+
+
+
+
+
+
+
+ 
+    
+</body>
+</html>
