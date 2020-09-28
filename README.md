@@ -1,4 +1,4 @@
-# todoapp
+# Django Todo App
 
 # Used
 
@@ -16,6 +16,14 @@
 - Update Todo
 - Completed/ Not Completed Todo
 - Delete Todo
+
+## Running
+
+```shell
+    python manage.py runserver
+
+```
+
 
 
 ## Demo
